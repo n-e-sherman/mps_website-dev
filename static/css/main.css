@@ -8,6 +8,13 @@ body, html {
     width: 400px;
 }
 
+.image {
+    margin-top: 20px;
+    margin: 0 auto;
+    width: 400px;
+}
+
+
 table, td, th {
     border: 1px solid #aaa;
 }
@@ -31,5 +38,9 @@ td {
 }
 
 #content {
+    width: 70%;
+}
+
+#image {
     width: 70%;
 }

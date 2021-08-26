@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/adv_params.js') }}"></script>
+<title> Correlation Function </title>
+
+<style>
+
+	.myImage
+	{
+		padding-bottom: 30px;
+	}
+
+	#home
+	{
+		text-align: right;
+	}
+
+	#advCheckGroup
+	{
+		margin-top: 0px;
+		margin-bottom: -10px;
+	}
+
+	#HamiltonianEq
+	{
+		padding: 0em 0 0 0;
+	}
+
+	.form-group
+	{
+		padding: 1em 1em 1em 1em;
+		background-color: AliceBlue;
+		margin: 1em 0 1em 0;
+	}
+
+	.form-control
+	{
+		margin-bottom: 3px;
+	}
+
+	.tex-label
+	{
+		padding: 10px 0px 2px 0;
+		margin: 0 7px 0px;
+	}
+
+	.text-label
+	{
+		padding: 7px 0px 8px 5px;
+		margin: 0 0px -13px 0;
+	}
+
+	.parameterForm
+	{
+		background-color: LightGray;
+		padding: 1em 1em 1em 1em;
+		position: relative;
+		margin: auto;
+		width: 70%;
+	}
+
+	.myPlot
+	{
+		width: 100%;
+	}
+
+	#advCheck
+	{
+		margin-top: 1px;
+	}
+
+</style>
+
+{% endblock %}
+{% block body %}
+
+	<h4>
+		$$G_{AB}(x,t) = \langle A(x,t) B(0,0) \rangle$$
+	</h4>
+	<form class="parameterForm" method="POST" novalidate>
+
+		<div class="form-group border border-light rounded" id="model">
+			<h3> Model Parameters </h3>
+			<div class="form-row">
+			    <div class="col">
+			    	<label class="text-label"> Lattice </label>
+			    	<select class="form-control form-control-sm" name="Lattice">
+						<option selected>Chain</option>
+						<option>Square</option>
+						<option>Triangular</option>
+    				</select>
+			    </div>
+			    <div class="col" id="siteCol">
+			    	<label class="text-label">Site</label>
+					<select class="form-control form-control-sm" name="SiteSet">
+						<option selected>Spin-1/2</option>
+						<option>Spin-1</option>
+						<option>Fermion</option>
+						<option>Boson</option>
+		    		</select>
+		    	</div>
+			    <div class="col">
+			    	<label class="text-label"> Hamiltonian </label>
+			    	<select class="form-control form-control-sm" name="Model">
+						<option>XXZ</option>
+						<option>Heisenberg</option>
+		    		</select>
+			    </div>
+			</div>
+
+			<div class="form-row">
+			    <div class="col">
+			    	<label class="text-label">L</label>
+					<input type="number" class="form-control form-control-sm" placeholder="16" name="N" id="L" min="2" step="1" required>
+					<div class="invalid-feedback">
+			    		Please provide an integer value greater than 1.
+			    	</div>
+		    	</div>
+		    	<div class="col">
+			    	<label class="tex-label">\(\Delta\)</label>
+					<input type="number" class="form-control form-control-sm" placeholder="1.0" name="Delta" id="Delta" step="any" required>
+					<div class="invalid-feedback">
+			    		Please provide a numeric value
+			    	</div>
+		    	</div>
+			</div>
+	  	</div>
+	  	<h3 id="HamiltonianEq" style="text-align: center"> \( H = \sum_i S^z_i S^z_{i+1} + \frac{\Delta}{2}\left[S_i^+S_{i+1}^- + S_i^{-}S_{i+1}^+\right]\)</h3>
+
+	  	<div class="form-group border border-light rounded">
+			<h3> Simulation Parameters </h3>
+			<div class="form-row">
+			    <div class="col" id="state-col">
+			    	<label class="text-label">State</label>
+					<select class="form-control form-control-sm" name="state">
+						<option> Ground </option>
+						<option> Thermal </option>
+		    		</select>
+		    	</div>
+			    <div class="col" id="time-col">
+			    	<label class="text-label"> time </label>
+					<input type="number" class="form-control form-control-sm" placeholder="10.0" name="time" id="time" step="any" required>
+					<div class="invalid-feedback">
+			    		Please provide a numerical value
+			    	</div>
+		    	</div>
+		    	<div class="col">
+			    	<label class="tex-label">\(\chi\)</label>
+					<input type="number" class="form-control form-control-sm" placeholder="16" name="MaxDim" id="chi" step="1" required>
+					<div class="invalid-feedback">
+			    		Please provide an integer value
+			    	</div>
+		    	</div>
+		    	<div class="col" id="method-col">
+			    	<label class="text-label">Time evolution algorithm</label>
+					<select class="form-control form-control-sm" name="evolver">
+						<option> TDVP </option>
+						<option> TEBD </option>
+						<option> WI </option>
+						<option> WII </option>
+		    		</select>
+		    	</div>
+			</div>
+	  	</div>
+
+	  	<div class="form-group border border-light rounded" id="advParams">
+	  		<div class="form-check" id="advCheckGroup">
+				<input class="form-check-input" type="checkbox" value="adv" id="advCheck">
+				<h6> Advanced Parameters </h6>
+        	</div>
+			<div class="adv">
+				<div class="form-row">
+				    <div class="col" id="state-col">
+				    	<label class="text-label"> numCenter </label>
+						<select class="adv form-control form-control-sm" id="numCenter" name="numCenter">
+							<option> 1 </option>
+							<option selected> 2 </option>
+			    		</select>
+			    	</div>
+			    	<div class="col" id="time-col">
+				    	<label class="text-label"> time step </label>
+						<input type="number" class="form-control form-control-sm" name="time-tau" id="time-tau" value="0.1" step="any" required>
+						<div class="invalid-feedback">
+				    		Please provide a numerical value
+				    	</div>
+		    		</div>
+		    		<div class="col" id="state-col">
+				    	<label class="text-label"> force new run </label>
+						<select class="adv form-control form-control-sm" id="force" name="force">
+							<option> True </option>
+							<option selected> False </option>
+			    		</select>
+			    	</div>
+				</div>
+			</div>
+	  	</div>
+
+	  	<div class="form-row">
+	  		<div class="col">
+	  			<button id="submit-btn" class="btn btn-primary" type="submit">Run</button>
+	  		</div>
+  			<div class="col" id="home">
+  				<a id="home-btn" class="btn btn-link" href="/" role="button">Home</a>
+  			</div>
+	  	</div>
+	  	
+	</form>
+
+	<div class="container myImage">
+		<div class="row">
+			<div class="col">
+				<img class="myPlot rounded float-left" src="{{url_cor}}" class="img-fluid" alt="Responsive image">
+			</div>
+			<div class="col">
+				<img class="myPlot rounded float-right" src="{{url_auto}}" class="img-fluid" alt="Responsive image">
+			</div>
+		</div>
+	</div>
+	
+<script>
+	/************************************
+	 ************************************
+	 ************ TEMPORARY *************
+	 ************************************
+	 ************************************/
+    $(document).ready(function() {
+    	$("#L").val(4);
+    	$("#Delta").val(1.0);
+    	$("#time").val(2.0);
+    	$("#chi").val(16);
+    });
+</script>
+
+
+
+
+	
+
+
+
+{% endblock %}

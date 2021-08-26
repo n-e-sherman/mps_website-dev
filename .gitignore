@@ -1,0 +1,8 @@
+app-plus.py
+__pycache__
+notes.txt
+test.db
+*.ipynb
+code/.data/*
+code/.results/*
+code/main

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+
+
+{% block head %}
+<title> Dynamical Structure Factor </title>
+
+
+
+{% endblock %}
+{% block body %}
+
+	<h4>
+		$$S_{AB}(q,\omega) = \int dx \, e^{iqx}\int \frac{dt}{2\pi} \, e^{i\omega t} \langle A(x,t) B(0,0) \rangle$$
+	</h4>
+	<div class="image">
+	    <img src="{{ url_for('static', filename='plot/neutron.png') }}" alt="User Image">
+	</div>
+	<a href="/"> Home</a>
+	
+
+
+
+{% endblock %}

@@ -59,7 +59,7 @@
 		padding: 1em 1em 1em 1em;
 		position: relative;
 		margin: auto;
-		width: 70%;
+		width: 77%;
 	}
 
 	.myPlot
@@ -78,22 +78,38 @@
 {% block body %}
 
 	<h4>
-		$$G_{AB}(x,t) = \langle A(x,t) B(0,0) \rangle$$
+		Dynamical Correlation Function
 	</h4>
+	<p>
+		In this demo, we will look at the quantity
+		$$ G(x,t) := \langle S^z_x(t) S^z_0(0) \rangle \quad ; \quad S^z_x(t) = e^{iHt}S^z_x e^{-iHt}$$
+		for the XXZ model with Hamiltonian
+		$$ H = \sum_i S^z_i S^z_{i+1} + \Delta\left[S^x_i S^x_{i+1} + S^y_i S^y_{i+1}\right]. $$
+		In this model, the total magnetization
+		$$ M := \sum_x S^z_x $$
+		is a conserved quantity, and \(G(x,t)\) is the simplest non-trivial object that probes the flow of the spin density corresponding to M.
+	</p>
+
+	<p>
+		There are three regimes in the XXZ model for the dynamical properties at high temperatures: \(\Delta < 1 \) with ballistic transport, \(\Delta > 1 \) with spin diffusion, and \(\Delta = 1 \) where KPZ hydrodynamics is found [CITE].
+		These different dynamical behaviors can be observed in the exponent of the time dependence of the auto-correlation function
+		$$ G(x=0,t) \sim t^{-1/z}$$
+		with \(z=1\) indicating ballistic transport, \(z=2\) diffusion, and \(z=3/2\) KPZ. This demo will display \(G(x,t)\) as a color plot, and \(G(x=0,t)\) for either the ground state (T=0), or at infinite temperature.
+	</p>
 	<form class="parameterForm" method="POST" novalidate>
 
 		<div class="form-group border border-light rounded" id="model">
 			<h3> Model Parameters </h3>
 			<div class="form-row">
-			    <div class="col">
+			    <!-- <div class="col">
 			    	<label class="text-label"> Lattice </label>
 			    	<select class="form-control form-control-sm" name="Lattice">
 						<option selected>Chain</option>
 						<option>Square</option>
 						<option>Triangular</option>
     				</select>
-			    </div>
-			    <div class="col" id="siteCol">
+			    </div> -->
+			    <!-- <div class="col" id="siteCol">
 			    	<label class="text-label">Site</label>
 					<select class="form-control form-control-sm" name="SiteSet">
 						<option selected>Spin-1/2</option>
@@ -101,72 +117,71 @@
 						<option>Fermion</option>
 						<option>Boson</option>
 		    		</select>
-		    	</div>
-			    <div class="col">
+		    	</div> -->
+			    <!-- <div class="col">
 			    	<label class="text-label"> Hamiltonian </label>
 			    	<select class="form-control form-control-sm" name="Model">
 						<option>XXZ</option>
 						<option>Heisenberg</option>
+						<option></option>
 		    		</select>
-			    </div>
+			    </div> -->
 			</div>
 
 			<div class="form-row">
 			    <div class="col">
 			    	<label class="text-label">L</label>
-					<input type="number" class="form-control form-control-sm" placeholder="16" name="N" id="L" min="2" step="1" required>
+					<input type="number" class="form-control form-control-sm" placeholder="16" name="N" id="L" min="2" step="1" max="64" required>
 					<div class="invalid-feedback">
-			    		Please provide an integer value greater than 1.
+			    		Please provide an integer between 2 and 64.
 			    	</div>
 		    	</div>
 		    	<div class="col">
 			    	<label class="tex-label">\(\Delta\)</label>
 					<input type="number" class="form-control form-control-sm" placeholder="1.0" name="Delta" id="Delta" step="any" required>
 					<div class="invalid-feedback">
-			    		Please provide a numeric value
+			    		Please provide a numeric value.
 			    	</div>
 		    	</div>
 			</div>
 	  	</div>
-	  	<h3 id="HamiltonianEq" style="text-align: center"> \( H = \sum_i S^z_i S^z_{i+1} + \frac{\Delta}{2}\left[S_i^+S_{i+1}^- + S_i^{-}S_{i+1}^+\right]\)</h3>
+	  	<h3 id="HamiltonianEq" style="text-align: center"> \( H = \sum_i S^z_i S^z_{i+1} + \Delta\left[S^x_i S^x_{i+1} + S^y_i S^y_{i+1}\right] \)</h3>
 
 	  	<div class="form-group border border-light rounded">
 			<h3> Simulation Parameters </h3>
 			<div class="form-row">
 			    <div class="col" id="state-col">
-			    	<label class="text-label">State</label>
+			    	<label class="text-label">Temperature</label>
 					<select class="form-control form-control-sm" name="state">
-						<option> Ground </option>
-						<option> Thermal </option>
+						<option> 0 (Ground state) </option>
+						<option> \(\infty\) (Thermal state)</option>
 		    		</select>
 		    	</div>
 			    <div class="col" id="time-col">
 			    	<label class="text-label"> time </label>
 					<input type="number" class="form-control form-control-sm" placeholder="10.0" name="time" id="time" step="any" required>
 					<div class="invalid-feedback">
-			    		Please provide a numerical value
+			    		Please provide a numerical value.
 			    	</div>
 		    	</div>
 		    	<div class="col">
 			    	<label class="tex-label">\(\chi\)</label>
-					<input type="number" class="form-control form-control-sm" placeholder="16" name="MaxDim" id="chi" step="1" required>
+					<input type="number" class="form-control form-control-sm" placeholder="16" name="MaxDim" id="chi" min="1" max="32" step="1" required>
 					<div class="invalid-feedback">
-			    		Please provide an integer value
+			    		Please provide an integer between 2 and 32.
 			    	</div>
 		    	</div>
-		    	<div class="col" id="method-col">
+		    	<!-- <div class="col" id="method-col">
 			    	<label class="text-label">Time evolution algorithm</label>
-					<select class="form-control form-control-sm" name="evolver">
-						<option> TDVP </option>
+					<select class="form-control form-control-sm" name="Evolver">
 						<option> TEBD </option>
-						<option> WI </option>
-						<option> WII </option>
+						<option> TDVP </option>
 		    		</select>
-		    	</div>
+		    	</div> -->
 			</div>
 	  	</div>
 
-	  	<div class="form-group border border-light rounded" id="advParams">
+	  	<!-- <div class="form-group border border-light rounded" id="advParams">
 	  		<div class="form-check" id="advCheckGroup">
 				<input class="form-check-input" type="checkbox" value="adv" id="advCheck">
 				<h6> Advanced Parameters </h6>
@@ -196,7 +211,7 @@
 			    	</div>
 				</div>
 			</div>
-	  	</div>
+	  	</div> -->
 
 	  	<div class="form-row">
 	  		<div class="col">

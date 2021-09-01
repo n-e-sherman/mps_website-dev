@@ -4,5 +4,7 @@ notes.txt
 test.db
 *.ipynb
 code/.data/*
-code/.results/*
+code/.results/correlationx/Heisenberg/*
+code/.results/correlationx/XXZ/*
 code/main
+trash.png

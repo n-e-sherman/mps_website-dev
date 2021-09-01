@@ -41,18 +41,19 @@
 	<h1 id="title"><b> Introduction to Matrix Product States </b></h1>
 	<div class="intro">
 	<p>
-		Matrix product states are a flexible wave-function representation of a one-dimensional many-body system. Let's suppose we have a system of \(N\) particles, each with a local basis specified by \(|\sigma\rangle\). For example, a spin-\(\frac{1}{2}\) we would take \(|\sigma\rangle\) to be \(|\uparrow\rangle\) or \(|\downarrow\rangle\). The a basis state in the composite system takes the form
+		Matrix product states are a flexible wave-function representation of a one-dimensional many-body system. Let's suppose we have a system of \(N\) particles, each with a local basis specified by \(|\sigma\rangle\). For example, for a spin-\(\frac{1}{2}\) we would take \(|\sigma\rangle\) to be \(|\uparrow\rangle\) or \(|\downarrow\rangle\). Then a basis state in the composite system takes the form
 		$$ |\vec{\sigma}\rangle = |\sigma_1\sigma_2\cdots\sigma_{N-1}\sigma_N\rangle$$
 		A generic state in this basis then takes the form
-		$$ |\Psi\rangle = \sum_{n=1}^N C_n |\vec{\sigma}_n\rangle $$
-		The subscript \(n\) specifies a unique choice for each of the local basis elements, meaning
-		$$ C_n = C_{\sigma_1,\cdots,\sigma_N}$$
-		Thus, these coefficients can be viewed as a rank-\(N\) tensor. This rank-\(N\) tensor can further be expressed as a product of \(N\) rank-3 tensors
+		$$ |\Psi\rangle = \sum_{\vec{\sigma}_n}^N C_{\vec{\sigma}_n} |\vec{\sigma}_n\rangle $$
+		The \(C_{\vec{\sigma}_n}\) tensor can further be decomposed into a product of rank-3 tensors by writing
 		$$ C_{\sigma_1,\cdots,\sigma_N} = A^{\sigma_1}_{a_0,a_1}A^{\sigma_2}_{a_1,a_2}\cdots A^{\sigma_{N-1}}_{a_{N-2},a_{N-1}}A^{\sigma_{N}}_{a_{N-1},a_N} $$
-		Repeated indices are summed over, and indices \(a_1,a_N\) are trivial indices with dimension 1. I'll drop the subscript indices, as they're implied by matrix multiplication.
-		Then a generic quantum state takes the form
+		Repeated indices are summed over, and indices \(a_1,a_N\) are trivial indices with dimension 1. Dropping the subscript indices, as they're implied by matrix multiplication, a generic quantum state can be written as
 		$$ |\Psi\rangle = \sum_{\sigma_1,\cdots,\sigma_N} A^{\sigma_1}A^{\sigma_2}\cdots A^{\sigma_{N-1}}A^{\sigma_{N}}|\sigma_1,\cdots,\sigma_N\rangle $$
-		In this form, we call the state \(|\Psi\rangle\) a <b>matrix product state </b>. The dimension of the internal, subscript, indices \(\chi\) is exponentially large in the system size \(N\) for a generic quantum state. The real advantage in this ansatz comes from the fact that the entanglement entropy is related to \(\chi\) [citation], and ground states of 1D local Hamiltonians obey an entanglement area law, implying the entanglement is independent of \(N\). Thus, even in the thermodynamic limit of \(N\rightarrow \infty\), we can represent a ground state wave-function arbitrarily accurately with a finite number of parameters set by \(\chi\).
+		In this form, we call the state \(|\Psi\rangle\) a <b>matrix product state</b>, or more generally a <b>tensor network</b>. One major advantage of this form is that they can efficiently represent states of low entanglement, which the ground states of one-dimensional local Hamiltonians satisfy. For gapped systems, matrix product states can provide an exact description for the ground state, with a finite number of parameters, even in the thermodynamic limit. For more information on matrix product states, I point the reader to reference [1].
+	</p>
+
+	<p>
+		Matrix product states can also provide efficient algorithms for studying quantum dynamics without approximations beyond numerical error. Below are two calculation examples to get a taste of state of the art computational approaches in quantum dynamics for quantum spin systems. Full tensor network libraries can be found in Python [2], as well as in C++ and Julia [3].
 	</p>
 	</div>
 	<div id="calculations">
@@ -60,15 +61,17 @@
 
 		<p>
 			<a href="/correlation"> two-point correlation function</a>
-			&nbsp;&nbsp;&nbsp;
-			<a href="/neutron"> neutron-scattering cross-section</a>
+			<!-- &nbsp;&nbsp;&nbsp;
+			<a href="/neutron"> neutron-scattering cross-section</a> -->
 		</p>
 	</div>
 
 	<div id="references">
 		References:
 
-		<p><a id="schollwock-2011"></a><A HREF = "https://arxiv.org/abs/1008.3477" target="_blank">Schollwock MPS-DMRG</A></p>
+		<p>[1] <a id="schollwock-2011"></a><A HREF = "https://arxiv.org/abs/1008.3477" target="_blank"> Schollwock MPS-DMRG </A></p>
+		<p>[2] <a id="schollwock-2011"></a><A HREF = "https://tenpy.readthedocs.io/en/latest/" target="_blank"> TeNPy --  Python tensor network library. </A></p>
+		<p>[3] <a id="schollwock-2011"></a><A HREF = "https://itensor.org/" target="_blank">Itensor -- C++ and Julia tensor netowrk library. </A></p>
 
 	</div>
 

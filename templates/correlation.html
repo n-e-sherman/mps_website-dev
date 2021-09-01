@@ -159,7 +159,14 @@
 		    	</div>
 			    <div class="col" id="time-col">
 			    	<label class="text-label"> time </label>
-					<input type="number" class="form-control form-control-sm" placeholder="10.0" name="time" id="time" step="any" required>
+					<input type="number" class="form-control form-control-sm" placeholder="10.0" name="time" id="time" max="20" step="any" required>
+					<div class="invalid-feedback">
+			    		Please provide a numerical value.
+			    	</div>
+		    	</div>
+		    	<div class="col" id="time-col">
+			    	<label class="text-label"> time-tau </label>
+					<input type="number" class="form-control form-control-sm" placeholder="0.1" name="time-tau" id="time-tau" step="any" required>
 					<div class="invalid-feedback">
 			    		Please provide a numerical value.
 			    	</div>
@@ -168,16 +175,16 @@
 			    	<label class="tex-label">\(\chi\)</label>
 					<input type="number" class="form-control form-control-sm" placeholder="16" name="MaxDim" id="chi" min="1" max="32" step="1" required>
 					<div class="invalid-feedback">
-			    		Please provide an integer between 2 and 32.
+			    		Please provide an integer between 1 and 16.
 			    	</div>
 		    	</div>
-		    	<!-- <div class="col" id="method-col">
+		    	<div class="col" id="method-col">
 			    	<label class="text-label">Time evolution algorithm</label>
 					<select class="form-control form-control-sm" name="Evolver">
 						<option> TEBD </option>
 						<option> TDVP </option>
 		    		</select>
-		    	</div> -->
+		    	</div>
 			</div>
 	  	</div>
 
@@ -242,10 +249,11 @@
 	 ************************************
 	 ************************************/
     $(document).ready(function() {
-    	$("#L").val(4);
+    	$("#L").val(64);
     	$("#Delta").val(1.0);
-    	$("#time").val(2.0);
-    	$("#chi").val(16);
+    	$("#time").val(10);
+    	$("#time-tau").val(0.1);
+    	$("#chi").val(8);
     });
 </script>
 

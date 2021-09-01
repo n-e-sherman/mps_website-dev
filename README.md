@@ -23,7 +23,14 @@ $ source env/bin/activate
 $ (env) pip install -r requirements.txt
 ```
 
-5. Finally start the web server:
+5. The backend is the executable from the code at this repo
+https://github.com/n-e-sherman/mps.git
+and the executable must be called 'main' and placed in the code directory.
+```
+$ (env) pip install -r requirements.txt
+```
+
+6. Finally start the web server:
 ```
 $ (env) python app.py
 ```

@@ -31,6 +31,7 @@ def make_arguments(inputs):
 	res = []
 	for k, v in inputs.items():
 		res.append('--' + k + '=' + str(v))
+	print(res)
 	return res
 
 def make_plot(df):
@@ -83,12 +84,11 @@ def make_plot(df):
 
 	fig = Figure()
 	ax = fig.subplots()
-	# ax.plot(ts,abs(autoR),color='k',label='real')
-	# ax.plot(ts,abs(autoI),color='b',label='imag')
-	ax.plot(ts,abs(autoA),color='r')
+	ax.plot(ts,abs(autoR),color='k',label='real')
+	ax.plot(ts,abs(autoI),color='b',label='imaginary')
+	ax.plot(ts,abs(autoA),color='r',label='magnitude')
 	ax.set_xscale('log')
 	ax.set_yscale('log')
-	ax.set_ylabel('testing',fontsize=14)
 	ax.set_xlabel('$t$',fontsize=14)
 	fig.tight_layout()
 	ax.set_ylabel('$|G(x=0,t)|$',fontsize=14)
@@ -114,14 +114,18 @@ def run_code(inputs):
 	inputs['Silent'] = "true"
 	inputs['SiteSet'] = "SpinHalf"
 	inputs['Model'] = "XXZ"
-	inputs['nSweeps'] = 5
 	inputs['beta'] = 0
-	inputs['Evolver'] = "Trotter"
+
+	if(inputs['Evolver'] == "TEBD"):
+		inputs['Evolver'] = "Trotter"
 	inputs['swap'] = "true"
-	# if(inputs['Evolver'] == "TEBD"):
-	# 	inputs['Evolver'] = "Trotter"
-	# sweeps_maxdim = [int(1.0/float(inputs['nSweeps'])*n*inputs['MaxDim']) for n in range(1, inputs['nSweeps']+1)]
-	# inputs['sweeps_maxdim'] = str(sweeps_maxdim).strip("[").strip("]").replace(" ","")
+	inputs['MaxIter'] = 5
+
+
+
+	inputs['nSweeps'] = 5
+	sweeps_maxdim = [int(1.0 / float(inputs['nSweeps']) * n * int(inputs['MaxDim'])) for n in range(1, inputs['nSweeps'] + 1)]
+	inputs['sweeps_maxdim'] = str(sweeps_maxdim).strip("[").strip("]").replace(" ", "")
 	if "Ground" in inputs['state']:
 		inputs['thermal'] = "false"
 	result = subprocess.run(["code/main"]+make_arguments(inputs),capture_output=True)

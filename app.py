@@ -140,24 +140,14 @@ def run_code(inputs):
 	inputs['beta'] = 0
 	inputs['Evolver'] = "Trotter"
 
-	# if(inputs['Evolver'] == "TEBD"):
-	# 	inputs['Evolver'] = "Trotter"
-	# inputs['swap'] = "true"
-	# inputs['MaxIter'] = 5
-
-
-
 	inputs['nSweeps'] = 5
 	sweeps_maxdim = [int(1.0 / float(inputs['nSweeps']) * n * int(inputs['MaxDim'])) for n in range(1, inputs['nSweeps'] + 1)]
 	inputs['sweeps_maxdim'] = str(sweeps_maxdim).strip("[").strip("]").replace(" ", "")
 
-	# inputs["sweeps_mindim"] = "0,0,0"
-	# inputs["sweeps_cutoff"] = "1E-6,1E-9,1E-12"
-	# inputs["sweeps_niter"] = "4,3,2"
-	# inputs["sweeps_noise"] = "1E-7,1E-10,0"
-
-	if "Ground" in inputs['state']:
+	if inputs['state'] == "0":
 		inputs['thermal'] = "false"
+	elif inputs['state'] == "1":
+		inputs['thermal'] = "true"
 	result = subprocess.run(["code/main"]+make_arguments(inputs),capture_output=True)
 	s = str(result.stdout)
 	_file_name = s.split()[-1]

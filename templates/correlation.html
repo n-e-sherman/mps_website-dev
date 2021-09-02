@@ -3,245 +3,9 @@
 
 {% block head %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/validation.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/adv_params.js') }}"></script>
-<title> Correlation Function </title>
 
-<style>
 
-	.myImage
-	{
-		padding-bottom: 30px;
-	}
 
-	#home
-	{
-		text-align: right;
-	}
-
-	#advCheckGroup
-	{
-		margin-top: 0px;
-		margin-bottom: -10px;
-	}
-
-	#HamiltonianEq
-	{
-		padding: 0em 0 0 0;
-	}
-
-	.form-group
-	{
-		padding: 1em 1em 1em 1em;
-		background-color: AliceBlue;
-		margin: 1em 0 1em 0;
-	}
-
-	.form-control
-	{
-		margin-bottom: 3px;
-	}
-
-	.tex-label
-	{
-		padding: 10px 0px 2px 0;
-		margin: 0 7px 0px;
-	}
-
-	.text-label
-	{
-		padding: 7px 0px 8px 5px;
-		margin: 0 0px -13px 0;
-	}
-
-	.parameterForm
-	{
-		background-color: LightGray;
-		padding: 1em 1em 1em 1em;
-		position: relative;
-		margin: auto;
-		width: 77%;
-	}
-
-	.myPlot
-	{
-		width: 100%;
-	}
-
-	#advCheck
-	{
-		margin-top: 1px;
-	}
-
-</style>
-
-{% endblock %}
-{% block body %}
-
-	<h4>
-		Dynamical Correlation Function
-	</h4>
-	<p>
-		In this demo, we will look at the quantity
-		$$ G(x,t) := \langle S^z_x(t) S^z_0(0) \rangle \quad ; \quad S^z_x(t) = e^{iHt}S^z_x e^{-iHt}$$
-		for the XXZ model with Hamiltonian
-		$$ H = \sum_i S^z_i S^z_{i+1} + \Delta\left[S^x_i S^x_{i+1} + S^y_i S^y_{i+1}\right]. $$
-		In this model, the total magnetization
-		$$ M := \sum_x S^z_x $$
-		is a conserved quantity, and \(G(x,t)\) is the simplest non-trivial object that probes the flow of the spin density corresponding to M.
-	</p>
-
-	<p>
-		There are three regimes in the XXZ model for the dynamical properties at high temperatures: \(\Delta < 1 \) with ballistic transport, \(\Delta > 1 \) with spin diffusion, and \(\Delta = 1 \) where KPZ hydrodynamics is found [CITE].
-		These different dynamical behaviors can be observed in the exponent of the time dependence of the auto-correlation function
-		$$ G(x=0,t) \sim t^{-1/z}$$
-		with \(z=1\) indicating ballistic transport, \(z=2\) diffusion, and \(z=3/2\) KPZ. This demo will display \(G(x,t)\) as a color plot, and \(G(x=0,t)\) for either the ground state (T=0), or at infinite temperature.
-	</p>
-	<form class="parameterForm" method="POST" novalidate>
-
-		<div class="form-group border border-light rounded" id="model">
-			<h3> Model Parameters </h3>
-			<div class="form-row">
-			    <!-- <div class="col">
-			    	<label class="text-label"> Lattice </label>
-			    	<select class="form-control form-control-sm" name="Lattice">
-						<option selected>Chain</option>
-						<option>Square</option>
-						<option>Triangular</option>
-    				</select>
-			    </div> -->
-			    <!-- <div class="col" id="siteCol">
-			    	<label class="text-label">Site</label>
-					<select class="form-control form-control-sm" name="SiteSet">
-						<option selected>Spin-1/2</option>
-						<option>Spin-1</option>
-						<option>Fermion</option>
-						<option>Boson</option>
-		    		</select>
-		    	</div> -->
-			    <!-- <div class="col">
-			    	<label class="text-label"> Hamiltonian </label>
-			    	<select class="form-control form-control-sm" name="Model">
-						<option>XXZ</option>
-						<option>Heisenberg</option>
-						<option></option>
-		    		</select>
-			    </div> -->
-			</div>
-
-			<div class="form-row">
-			    <div class="col">
-			    	<label class="text-label">L</label>
-					<input type="number" class="form-control form-control-sm" placeholder="16" name="N" id="L" min="2" step="1" max="64" required>
-					<div class="invalid-feedback">
-			    		Please provide an integer between 2 and 64.
-			    	</div>
-		    	</div>
-		    	<div class="col">
-			    	<label class="tex-label">\(\Delta\)</label>
-					<input type="number" class="form-control form-control-sm" placeholder="1.0" name="Delta" id="Delta" step="any" required>
-					<div class="invalid-feedback">
-			    		Please provide a numeric value.
-			    	</div>
-		    	</div>
-			</div>
-	  	</div>
-	  	<h3 id="HamiltonianEq" style="text-align: center"> \( H = \sum_i S^z_i S^z_{i+1} + \Delta\left[S^x_i S^x_{i+1} + S^y_i S^y_{i+1}\right] \)</h3>
-
-	  	<div class="form-group border border-light rounded">
-			<h3> Simulation Parameters </h3>
-			<div class="form-row">
-			    <div class="col" id="state-col">
-			    	<label class="text-label">Temperature</label>
-					<select class="form-control form-control-sm" name="state">
-						<option> 0 (Ground state) </option>
-						<option> \(\infty\) (Thermal state)</option>
-		    		</select>
-		    	</div>
-			    <div class="col" id="time-col">
-			    	<label class="text-label"> time </label>
-					<input type="number" class="form-control form-control-sm" placeholder="10.0" name="time" id="time" max="20" step="any" required>
-					<div class="invalid-feedback">
-			    		Please provide a numerical value.
-			    	</div>
-		    	</div>
-		    	<div class="col" id="time-col">
-			    	<label class="text-label"> time-tau </label>
-					<input type="number" class="form-control form-control-sm" placeholder="0.1" name="time-tau" id="time-tau" step="any" required>
-					<div class="invalid-feedback">
-			    		Please provide a numerical value.
-			    	</div>
-		    	</div>
-		    	<div class="col">
-			    	<label class="tex-label">\(\chi\)</label>
-					<input type="number" class="form-control form-control-sm" placeholder="16" name="MaxDim" id="chi" min="1" max="32" step="1" required>
-					<div class="invalid-feedback">
-			    		Please provide an integer between 1 and 16.
-			    	</div>
-		    	</div>
-		    	<div class="col" id="method-col">
-			    	<label class="text-label">Time evolution algorithm</label>
-					<select class="form-control form-control-sm" name="Evolver">
-						<option> TEBD </option>
-						<option> TDVP </option>
-		    		</select>
-		    	</div>
-			</div>
-	  	</div>
-
-	  	<!-- <div class="form-group border border-light rounded" id="advParams">
-	  		<div class="form-check" id="advCheckGroup">
-				<input class="form-check-input" type="checkbox" value="adv" id="advCheck">
-				<h6> Advanced Parameters </h6>
-        	</div>
-			<div class="adv">
-				<div class="form-row">
-				    <div class="col" id="state-col">
-				    	<label class="text-label"> numCenter </label>
-						<select class="adv form-control form-control-sm" id="numCenter" name="numCenter">
-							<option> 1 </option>
-							<option selected> 2 </option>
-			    		</select>
-			    	</div>
-			    	<div class="col" id="time-col">
-				    	<label class="text-label"> time step </label>
-						<input type="number" class="form-control form-control-sm" name="time-tau" id="time-tau" value="0.1" step="any" required>
-						<div class="invalid-feedback">
-				    		Please provide a numerical value
-				    	</div>
-		    		</div>
-		    		<div class="col" id="state-col">
-				    	<label class="text-label"> force new run </label>
-						<select class="adv form-control form-control-sm" id="force" name="force">
-							<option> True </option>
-							<option selected> False </option>
-			    		</select>
-			    	</div>
-				</div>
-			</div>
-	  	</div> -->
-
-	  	<div class="form-row">
-	  		<div class="col">
-	  			<button id="submit-btn" class="btn btn-primary" type="submit">Run</button>
-	  		</div>
-  			<div class="col" id="home">
-  				<a id="home-btn" class="btn btn-link" href="/" role="button">Home</a>
-  			</div>
-	  	</div>
-	  	
-	</form>
-
-	<div class="container myImage">
-		<div class="row">
-			<div class="col">
-				<img class="myPlot rounded float-left" src="{{url_cor}}" class="img-fluid" alt="Responsive image">
-			</div>
-			<div class="col">
-				<img class="myPlot rounded float-right" src="{{url_auto}}" class="img-fluid" alt="Responsive image">
-			</div>
-		</div>
-	</div>
-	
 <script>
 	/************************************
 	 ************************************
@@ -249,13 +13,283 @@
 	 ************************************
 	 ************************************/
     $(document).ready(function() {
-    	$("#L").val(64);
+    	$("#L").val(10);
     	$("#Delta").val(1.0);
-    	$("#time").val(10);
+    	$("#time").val(2);
     	$("#time-tau").val(0.1);
     	$("#chi").val(8);
     });
 </script>
+
+</head>
+<title> Dynamical Correlation Function </title>
+
+<style>
+
+	
+
+	#title
+	{
+		text-align: center;
+	}
+
+	.myPlot
+	{
+		width: 100%;
+	}
+
+	.myImage
+	{
+		width:  95%;
+		/*padding-bottom: 30px;*/
+	}
+
+	.parameterForm
+	{
+		/*background-color: LightGray;*/
+		padding: 1em 1em 1em 1em;
+		position: relative;
+		margin: auto;
+		width: 77%;
+	}
+
+	.tex-label
+	{
+		padding: 10px 0px 2px 1px;
+		margin: 0 7px 0px;
+	}
+
+	.text-label
+	{
+		padding: 7px 0px 9px 6px;
+		margin: 0 0px -13px 0;
+	}
+
+	.myAccordion
+	{
+		width: 77%;
+		margin: auto;
+		padding-bottom: 300px;
+	}
+
+	.mySelected
+	{
+		text-align: center;
+	}
+
+</style>
+
+{% endblock %}
+{% block body %}
+
+	<h3 id="title"><b> Dynamical Correlation Function </b></h3>
+
+<div class="accordion myAccordion" id="accordionPanelsStayOpenExample">
+	<div class="accordion-item">
+		<h2 class="accordion-header" id="panelsStayOpen-headingOne">
+			<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+				<h5> Overview </h5>
+			</button>
+		</h2>
+		<div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+			<div class="accordion-body">
+				<h5>
+					In this demo, we will look at the quantity
+					$$ G(x,t) := \langle S^z_x(t) S^z_0(0) \rangle $$
+					for the \(S=1/2\) XXZ chain with Hamiltonian
+					$$ H = \sum_i S^z_i S^z_{i+1} + \Delta\left[S^x_i S^x_{i+1} + S^y_i S^y_{i+1}\right]. $$
+				</h5>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="accordion-item">
+		<h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+				<h5> Background </h5>
+			</button>
+		</h2>
+		<div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+			<div class="accordion-body">
+				<p>
+
+					In the XXZ model, the total magnetization
+					$$ M := \sum_x S^z_x $$
+					is a conserved quantity, and \(G(x,t)\) is the simplest non-trivial object that probes the flow of the spin density corresponding to M. There are three regimes in the XXZ model for the dynamical properties at high temperatures: \(\Delta < 1 \) with ballistic transport, \(\Delta > 1 \) with spin diffusion, and \(\Delta = 1 \) where KPZ hydrodynamics is found [CITE].
+				</p>
+
+				<p>
+					This demo displays \(G(x,t)\) as a color plot, as well as the auto-correlation given by \(G(x=0,t)\).
+					These different dynamical regimes can be seen in this demo by looking at the color plot generated by the simulations. In the case of ballistic transport, the color plot will show a sharp light-cone like structure, indicating that the excitations move freely. In the case of KPZ and diffusion, there will not be high resolution maximum intensity lines. Distinguishing KPZ and diffusion requires more computational resources than are present in this demo, and I point the interested reader to explore the following references [CITE].
+				</p>
+
+				<p>
+					In this demo, you can adjust the system size \(L\), the anisotropy parameter in the Hamiltonian \(\Delta\), the maximum time \(t\), the bond-dimension \(\chi\), and whether to look at the ground state (T=0) or a thermal state (T=\(\infty\)). To have good resoltuion for seeing the different structures in the dynamical correlation function, it is recommended to use \(L = 64\), \(t=10\), and \(\chi=8\) in the ground state, or \(L = 32\), \(t=10\), and \(\chi=32\) for a thermal state. The time needed for the code to run scales as \(tL\chi^3\), so it may take up to a few mintues to run a task.
+				</p>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="accordion-item">
+		<h2 class="accordion-header" id="panelsStayOpen-headingThree">
+			<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="true" aria-controls="panelsStayOpen-collapseThree">
+				<h5> Simulation parameters </h5>
+			</button>
+		</h2>
+		<div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingThree">
+			<div class="accordion-body">
+
+				<form class="parameterForm needs-validation" method="POST" novalidate>
+					<div class="input-group flex-nowrap mb-3">
+						<div class="row">
+
+							<div class="col-3">
+								<label for="T" class="text-label" for="inputGroupSelect01">Temperature</label>
+								<select class="form-select" id="T" name="state" required>
+									<option selected disabled value="" class="mySelected"> ... </option>
+									<option value="0"> 0 (Ground state) </option>
+									<option value="1"> \(\infty\) (Thermal state) </option>
+								</select>
+								<div class="invalid-feedback">
+							    	Please select a temperature.
+							    </div>
+							</div>
+
+							<div class="col">
+								<label for="L" class="text-label"> L</label>
+						  		<input type="number" class="form-control" placeholder="64" aria-label="L" name="N" id="L" step="1" min="2" max="64" required>
+						  		<div class="invalid-feedback">
+							     	Please provide an integer between 2 and 64.
+							    </div>
+							</div>
+
+							<div class="col">
+								<label for="Delta" class="tex-label"> \(\Delta\) </label>
+								<input type="number" class="form-control" placeholder="1.0" aria-label="Delta" name="Delta" id="Delta" step="any" required>
+								<div class="invalid-feedback">
+							     	Please provide a numerical value.
+							    </div>
+						    </div>
+
+						    <div class="col">
+								<label for="time" class="text-label"> time </label>
+								<input type="number" class="form-control" placeholder="10.0" aria-label="time" name="time" id="time" max="50" min="0" step="any" required>
+								<div class="invalid-feedback">
+							     	Please provide a positive number less than 50.
+							    </div>
+							</div>
+
+							<div class="col">
+								<label for="chi" class="tex-label"> \(\chi\) </label>
+								<input type="number" class="form-control" placeholder="16" aria-label="chi" name="MaxDim" id="chi" max="32" min="1" required>
+								<div class="invalid-feedback">
+							     	Please provide an integer between 1 and 32.
+							    </div>
+						    </div>
+						</div>
+
+					</div>
+					<div class="form-row">
+				  		<div class="col">
+				  			<button id="submit-btn" class="btn btn-primary" type="submit">Run</button>
+				  		</div>
+			  			<div class="col" id="home">
+			  				<a id="home-btn" class="btn btn-link" href="/" role="button">Home</a>
+			  			</div>
+				  	</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<div class="accordion-item">
+		<h2 class="accordion-header" id="panelsStayOpen-headingFour">
+			<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="true" aria-controls="panelsStayOpen-collapseFour">
+				<h5> Results </h5>
+			</button>
+		</h2>
+		<div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingFour">
+			<div class="accordion-body">
+				<div class="container myImage">
+					<div class="row align-items-center">
+						<div class="col-md-6">
+							<img class="myPlot rounded float-left img-fluid img-thumbnail" src="{{url_cor}}">
+						</div>
+						<div class="col-md-6">
+							<img class="myPlot rounded float-right img-fluid img-thumbnail" src="{{url_auto}}">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+</div>
+
+	<!-- <form>
+		<div class="input-group flex-nowrap mb-3 parameterForm">
+			<label class="input-group-text" for="inputGroupSelect01">Temperature</label>
+			<select class="form-select" id="inputGroupSelect01">
+				<option selected> 0 (Ground state) </option>
+				<option value="1"> \(\infty\) (Thermal state) </option>
+			</select>
+			<span class="input-group-text">L</span>
+	  		<input type="number" class="form-control" placeholder="64" aria-label="L" name="N" id="L" step="2" min="2" max="64">
+			<span class="input-group-text">\(\Delta\)</span>
+			<input type="number" class="form-control" placeholder="1.0" aria-label="Server" name="Delta" id="Delta" step="any">
+			<span class="input-group-text">time</span>
+			<input type="number" class="form-control" placeholder="10.0" aria-label="Server" name="time" id="time">
+			<span class="input-group-text">\(\chi\)</span>
+			<input type="number" class="form-control" placeholder="16" aria-label="Server" name="MaxDim" id="chi">
+		</div>
+		<div class="form-row">
+	  		<div class="col">
+	  			<button id="submit-btn" class="btn btn-primary" type="submit">Run</button>
+	  		</div>
+  			<div class="col" id="home">
+  				<a id="home-btn" class="btn btn-link" href="/" role="button">Home</a>
+  			</div>
+	  	</div>
+	</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<div class="container myImage">
+		<div class="row align-items-center">
+			<div class="col-md-6">
+				<img class="myPlot rounded float-left img-fluid img-thumbnail" src="{{url_cor}}">
+			</div>
+			<div class="col-md-6">
+				<img class="myPlot rounded float-right img-fluid img-thumbnail" src="{{url_auto}}">
+			</div>
+		</div>
+	</div> -->
+	
+
 
 
 

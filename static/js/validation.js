@@ -8,7 +8,6 @@
 		    // Loop over them and prevent submission
 		    var validation = Array.prototype.filter.call(forms, function(form) 
 		    {
-		    	console.log('hi',form);
 				form.addEventListener('submit', function(event) 
 				{
 					if (form.checkValidity() === false) 

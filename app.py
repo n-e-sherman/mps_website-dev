@@ -30,7 +30,7 @@ import base64
 #         return '<Task %r>' % self.id
 
 
-
+os.environ['FLASK_ENV'] = 'development'
 app = Flask(__name__)
 
 def rescale(zs, vmin = 0, vmax = 1):
@@ -46,6 +46,7 @@ def get_hash(inputs):
 		shash='Correlation_'
 	if inputs['Chebyshev'] == "true":
 		shash='Chebyshev_'
+	shash += inputs['thermal']+'_'+inputs['N']+'_'+inputs['Delta']+'_'+inputs['time']+'_'+inputs['MaxDim']
 	return shash
 
 def make_arguments(inputs):
@@ -71,7 +72,10 @@ def make_plot(df):
 	xs = np.arange(1,L+1)
 	cols = [str(x) for x in xs]
 	Icols = ['I'+str(x) for x in xs]
-	xs = np.arange(-int(L/2)+1,int(L/2)+1)
+	if (L%2) == 0:
+		xs = np.arange(-int(L/2)+1,int(L/2)+1)
+	else:
+		xs = np.arange(-int(L/2)+1,int(L/2)+2)
 
 	ts = np.array(df.t.unique())
 	RZs = np.array(df[cols])
@@ -101,7 +105,6 @@ def make_plot(df):
 	fig.tight_layout()
 	buf = BytesIO()
 	fig.savefig(buf, format="png")
-	fig.savefig('trash.png')
 	data_corr = base64.b64encode(buf.getbuffer()).decode("ascii")
 
 	fig = Figure()
@@ -118,7 +121,6 @@ def make_plot(df):
 
 	buf = BytesIO()
 	fig.savefig(buf, format="png")
-	fig.savefig('trash2.png')
 	data_auto = base64.b64encode(buf.getbuffer()).decode("ascii")
 
 	# return f"<img src='data:image/png;base64,{data_corr}'/>\n<img src='data:image/png;base64,{data_auto}'/>"
@@ -130,30 +132,31 @@ def run_code(inputs):
 	# DB is the proper way to do this, but for the sake of time 
 	# we ignore this and just use the value of the form.
 	_hash = get_hash(inputs)
+	cwd = os.getcwd()+'/'
+	_file = cwd+'code/.data/'+_hash
+	if os.path.exists(_file):
+		return pd.read_csv(_file)
+
 	inputs['save'] = "false"
 	inputs['write'] = "false"
 	inputs['resDir'] = "code/"
 	inputs['Silent'] = "true"
-
 	inputs['SiteSet'] = "SpinHalf"
 	inputs['Model'] = "XXZ"
 	inputs['beta'] = 0
 	inputs['Evolver'] = "Trotter"
-
 	inputs['nSweeps'] = 5
-	sweeps_maxdim = [int(1.0 / float(inputs['nSweeps']) * n * int(inputs['MaxDim'])) for n in range(1, inputs['nSweeps'] + 1)]
+	sweeps_maxdim = [np.max([1,int(1.0 / float(inputs['nSweeps']) * n * int(inputs['MaxDim']))]) for n in range(1, inputs['nSweeps'] + 1)]
 	inputs['sweeps_maxdim'] = str(sweeps_maxdim).strip("[").strip("]").replace(" ", "")
 
-	if inputs['state'] == "0":
-		inputs['thermal'] = "false"
-	elif inputs['state'] == "1":
-		inputs['thermal'] = "true"
-	result = subprocess.run(["code/main"]+make_arguments(inputs),capture_output=True)
+	result = subprocess.run([cwd+"code/main"]+make_arguments(inputs),capture_output=True)
 	s = str(result.stdout)
 	_file_name = s.split()[-1]
-	file_name = _file_name.replace("\\n'","")
-	print(file_name)
-	return pd.read_csv(file_name)
+	file_name = cwd+_file_name.replace("\\n'","")
+	df = pd.read_csv(file_name)
+	os.remove(file_name)
+	df.to_csv(_file)
+	return df
 
 # setup initial page
 @app.route('/')
@@ -184,5 +187,5 @@ def neutron():
     return render_template('neutron.html')
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port='5000')
+    app.run()
     # app.run()

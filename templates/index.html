@@ -33,6 +33,12 @@
 		width: 75%;
 	}
 
+	#references
+	{
+		line-height:0.75;
+		padding-bottom: -300px;
+	}
+
 </style>
 
 {% endblock %}
@@ -49,29 +55,33 @@
 		$$ C_{\sigma_1,\cdots,\sigma_N} = A^{\sigma_1}_{a_0,a_1}A^{\sigma_2}_{a_1,a_2}\cdots A^{\sigma_{N-1}}_{a_{N-2},a_{N-1}}A^{\sigma_{N}}_{a_{N-1},a_N} $$
 		Repeated indices are summed over, and indices \(a_1,a_N\) are trivial indices with dimension 1. Dropping the subscript indices, as they're implied by matrix multiplication, a generic quantum state can be written as
 		$$ |\Psi\rangle = \sum_{\sigma_1,\cdots,\sigma_N} A^{\sigma_1}A^{\sigma_2}\cdots A^{\sigma_{N-1}}A^{\sigma_{N}}|\sigma_1,\cdots,\sigma_N\rangle $$
-		In this form, we call the state \(|\Psi\rangle\) a <b>matrix product state</b>, or more generally a <b>tensor network</b>. One major advantage of this form is that they can efficiently represent states of low entanglement, which the ground states of one-dimensional local Hamiltonians satisfy. For gapped systems, matrix product states can provide an exact description for the ground state, with a finite number of parameters, even in the thermodynamic limit. For more information on matrix product states, I point the reader to reference [1].
+		In this form, we call the state \(|\Psi\rangle\) a <b>matrix product state</b>, or more generally a <b>tensor network</b>. This expression is exact, and any quantum state can be expressed in this form, so long as the shared index between the tensors, called the bond-dimension \(\chi\), is sufficiently large. One major advantage of this form is that they can efficiently represent states of low entanglement, which the ground states of one-dimensional local Hamiltonians satisfy. In fact, for gapped systems, matrix product states can provide an exact description for the ground state, with a finite number of parameters, even in the thermodynamic limit. For more information on matrix product states, I point the reader to reference <a href="#refMPS"> [1] </a>.
 	</p>
 
 	<p>
-		Matrix product states can also provide efficient algorithms for studying quantum dynamics without approximations beyond numerical error. Below are two calculation examples to get a taste of state of the art computational approaches in quantum dynamics for quantum spin systems. Full tensor network libraries can be found in Python [2], as well as in C++ and Julia [3].
+		Matrix product states can also provide efficient algorithms for studying quantum dynamics without approximations beyond numerical error. Below is a demo to get a taste of state of the art computational approaches in quantum dynamics for quantum spin systems. Full tensor network libraries can be found in Python <a href="#refTeNPy"> [2] </a>, as well as in C++ and Julia <a href="#refITensor"> [3] </a>.
 	</p>
 	</div>
 	<div id="calculations">
-		Calculation types:
-
-		<p>
-			<a href="/correlation"> two-point correlation function</a>
-			<!-- &nbsp;&nbsp;&nbsp;
-			<a href="/neutron"> neutron-scattering cross-section</a> -->
-		</p>
+		<h4> Demos: </h4>
+		<div class="col correlationButton" id="correlation">
+			<a id="home-btn" class="btn btn-secondary" href="/correlation" role="button">dynamical correlation function</a>
+		</div>
 	</div>
 
 	<div id="references">
-		References:
+		<h4> References: </h4>
+		<p></p>
 
-		<p>[1] <a id="schollwock-2011"></a><A HREF = "https://arxiv.org/abs/1008.3477" target="_blank"> Schollwock MPS-DMRG </A></p>
-		<p>[2] <a id="schollwock-2011"></a><A HREF = "https://tenpy.readthedocs.io/en/latest/" target="_blank"> TeNPy --  Python tensor network library. </A></p>
-		<p>[3] <a id="schollwock-2011"></a><A HREF = "https://itensor.org/" target="_blank">Itensor -- C++ and Julia tensor netowrk library. </A></p>
+		<p id="refMPS">[1] <a></a><A HREF = "https://www.sciencedirect.com/science/article/abs/pii/S0003491610001752?via%3Dihub" target="_blank"> 
+			Ulrich Schollwöck, The density-matrix renormalization group in the age of matrix product states. Annals of Physics, 326(1), 96-192. (2011).
+		</A></p>
+		<p id="refTeNPy">[2] <a></a><A HREF = "https://tenpy.readthedocs.io/en/latest/" target="_blank"> 
+			TeNPy --  Python tensor network library. 
+		</A></p>
+		<p id="refITensor">[3] <a></a><A HREF = "https://itensor.org/" target="_blank">
+			Itensor -- C++ and Julia tensor network library. 
+		</A></p>
 
 	</div>
 
